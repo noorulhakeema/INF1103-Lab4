@@ -49,34 +49,44 @@ else:
         print(item[0] + ", " + item[1] + ", " + item[2])
     print()
 
-def get_valid_input():
-    global failed_attempts
-    while True:
-        product_name = input("How many stocks to add, or type 'quit' to leave: ")
-
-        if product_name.lower() == "quit":
-            return "quit"
-
-        if not product_name.isdigit():
-            print("type a valid integer.")
-            failed_attempts +=1
-            continue
-
-        return int(new_stock)
-
 while True:
-    new_stock = get_valid_input()
+    product_name = input(
+        "Enter Product Name (or type 'quit' to exit): "
+    ).strip()
 
-    if new_stock =="quit":
+    if product_name.lower() == "quit":
+        save_inventory(orders)
         generate_report(deliveries_processed, failed_attempts)
         break
 
-    inventory = process_delivery(inventory, new_stock)
+    while True:
+        quantity_input = input("Enter Quantity: ").strip()
 
-    tax = calculate_tax(new_stock)
+        if quantity_input.lower() == "quit":
+            product_name = "quit"
+            break
 
-    print("new stock received")
-    print("Total inventory:", inventory)
-    print("Tax for this: {:.2f}".format(tax))
+        if not quantity_input.isdigit():
+            print("type a valid integer.")
+            failed_attempts += 1
+            continue
 
-    deliveries_processed +=1
+        quantity = int(quantity_input)
+        break
+
+    if product_name.lower() == "quit":
+        save_inventory(orders)
+        generate_report(deliveries_processed, failed_attempts)
+        break
+
+    next_id = str(1001 + len(orders))
+
+    new_order = [next_id, product_name, str(quantity)]
+    orders.append(new_order)
+
+    tax = calculate_tax(quantity)
+    deliveries_processed += 1
+
+    print("\nNew Order Added:")
+    print(new_order[0] + ", " + new_order[1] + ", " + new_order[2])
+    print("Tax for this entry: {:.2f}\n".format(tax))
