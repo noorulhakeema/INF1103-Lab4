@@ -1,7 +1,31 @@
-inventory = 0
+filename = "inventory.txt"
 failed_attempts = 0
 deliveries_processed = 0
 
+
+def load_inventory():
+    orders = []
+    file = open(filename, "a")
+    file.close()
+
+    file = open(filename, "r")
+    lines = file.readlines()
+    file.close()
+
+    for line in lines:
+        line = line.strip()
+        if line != "":
+            parts = line.split(",")
+            orders.append(parts)
+
+    return orders
+
+def save_inventory(orders):
+    file = open(filename, "w")
+    for item in orders:
+        file.write(item[0] + "," + item[1] + "," + item[2] + "\n")
+    file.close()
+    
 def get_valid_input():
     global failed_attempts
     while True:
